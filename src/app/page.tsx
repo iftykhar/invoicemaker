@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+// Removed static imports of html2canvas and jspdf for performance
 import { JSX } from "react/jsx-dev-runtime";
 
 interface Item {
@@ -80,13 +79,17 @@ export default function InvoiceMakerPage(): JSX.Element {
     input.style.color = "#111827";
 
     try {
+      // Dynamic imports to reduce TBT (Total Blocking Time)
+      const html2canvas = (await import("html2canvas")).default;
+      const { jsPDF } = await import("jspdf");
+
       const canvas = await html2canvas(input, {
         useCORS: true,
         backgroundColor: "#ffffff",
-        scale: 3, 
+        scale: 2, // Reduced scale slightly for better performance on mobile
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const imgData = canvas.toDataURL("image/jpeg", 0.95); // Slightly lower quality for smaller file size
       const pdf = new jsPDF("p", "mm", "a4");
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const canvasAspectRatio = canvas.height / canvas.width;
@@ -201,8 +204,8 @@ export default function InvoiceMakerPage(): JSX.Element {
               >
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h2 className="text-xl font-bold">{companyName}</h2>
-                    <div className="text-sm whitespace-pre-line">
+                    <h2 className="text-xl font-bold break-words">{companyName}</h2>
+                    <div className="text-sm whitespace-pre-line break-words">
                       {companyAddress}
                     </div>
                   </div>
@@ -215,10 +218,10 @@ export default function InvoiceMakerPage(): JSX.Element {
                   </div>
                 </div>
 
-                <div className="mb-6 border-l-4 border-[#3b82f6] pl-3"> {/* <--- Simplified border color */}
+                <div className="mb-6 border-l-4 border-[#3b82f6] pl-3 min-w-0"> {/* Added min-w-0 */}
                   <div className="text-sm font-semibold text-[#3b82f6] mb-1">Bill To:</div>
-                  <div className="font-medium">{clientName}</div>
-                  <div className="text-sm whitespace-pre-line">
+                  <div className="font-medium break-words">{clientName}</div>
+                  <div className="text-sm whitespace-pre-line break-words">
                     {clientAddress}
                   </div>
                 </div>
@@ -236,8 +239,8 @@ export default function InvoiceMakerPage(): JSX.Element {
                     </thead>
                     <tbody>
                       {items.map((it) => (
-                        <tr key={it.id} className="text-sm border-b border-[#eee] last:border-b-0"> {/* <--- Simplified border color */}
-                          <td className="py-2 px-2">{it.description}</td>
+                        <tr key={it.id} className="text-sm border-b border-[#eee] last:border-b-0">
+                          <td className="py-2 px-2 break-words max-w-[200px]">{it.description}</td>
                           <td className="py-2 px-2 text-center">{it.qty}</td>
                           <td className="py-2 px-2 text-right">
                             {formatCurrency(it.price)}
@@ -270,9 +273,9 @@ export default function InvoiceMakerPage(): JSX.Element {
                 </div>
 
                 {/* Notes/Footer - THE FIX IS APPLIED HERE */}
-                <div className="mt-8 pt-4 border-t border-dashed border-[#ccc]"> {/* <--- Simplified border color */}
+                <div className="mt-8 pt-4 border-t border-dashed border-[#ccc] min-w-0">
                   <div className="font-semibold text-[#444] mb-1">Notes:</div>
-                  <div className="text-sm text-[#6b7280] italic whitespace-pre-line">
+                  <div className="text-sm text-[#6b7280] italic whitespace-pre-line break-words">
                     {notes}
                   </div>
                 </div>
@@ -283,42 +286,46 @@ export default function InvoiceMakerPage(): JSX.Element {
                 <h3 className="text-lg font-semibold mb-3">Edit Items</h3>
                 <div className="space-y-3">
                   {items.map((it) => (
-                    <div key={it.id} className="flex gap-2 items-center">
-                      <Input
-                        className="flex-1"
-                        placeholder="Description"
-                        value={it.description}
-                        onChange={(e) =>
-                          updateItem(it.id, { description: e.target.value })
-                        }
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Qty"
-                        value={it.qty.toString()}
-                        className="w-20"
-                        onChange={(e) =>
-                          updateItem(it.id, { qty: Number(e.target.value) || 0 })
-                        }
-                      />
-                      <Input
-                        type="number"
-                        placeholder="Price"
-                        value={it.price.toString()}
-                        className="w-28"
-                        onChange={(e) =>
-                          updateItem(it.id, {
-                            price: Number(e.target.value) || 0,
-                          })
-                        }
-                      />
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeItem(it.id)}
-                      >
-                        Remove
-                      </Button>
+                    <div key={it.id} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center p-3 border rounded bg-white shadow-xs">
+                      <div className="flex-1 w-full min-w-0">
+                        <Input
+                          placeholder="Description"
+                          value={it.description}
+                          onChange={(e) =>
+                            updateItem(it.id, { description: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="flex gap-2 w-full sm:w-auto">
+                        <Input
+                          type="number"
+                          placeholder="Qty"
+                          value={it.qty.toString()}
+                          className="w-full sm:w-20"
+                          onChange={(e) =>
+                            updateItem(it.id, { qty: Number(e.target.value) || 0 })
+                          }
+                        />
+                        <Input
+                          type="number"
+                          placeholder="Price"
+                          value={it.price.toString()}
+                          className="w-full sm:w-28"
+                          onChange={(e) =>
+                            updateItem(it.id, {
+                              price: Number(e.target.value) || 0,
+                            })
+                          }
+                        />
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => removeItem(it.id)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
