@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { DndContext, useDraggable, useDroppable, DragEndEvent, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, useDraggable, useDroppable, DragEndEvent, DragStartEvent, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useReactToPrint } from "react-to-print";
@@ -97,7 +97,7 @@ export default function InvoiceMakerPage(): JSX.Element {
     new Date().toISOString().slice(0, 10)
   );
   const [notes, setNotes] = useState("Thank you for your business.");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoPosition, setLogoPosition] = useState<'left' | 'right' | 'top' | 'bottom'>('left');
@@ -148,7 +148,7 @@ export default function InvoiceMakerPage(): JSX.Element {
     }
   };
 
-  const handleDragStart = (event: any) => {
+  const handleDragStart = (event: DragStartEvent) => {
     if (event.active.id === 'logo') {
       setIsDraggingLogo(true);
     }
@@ -161,7 +161,7 @@ export default function InvoiceMakerPage(): JSX.Element {
 
     if (active.id === 'logo') {
       if (['left', 'right', 'top', 'bottom'].includes(over.id as string)) {
-        setLogoPosition(over.id as any);
+        setLogoPosition(over.id as 'left' | 'right' | 'top' | 'bottom');
       }
     } else {
       if (active.id !== over.id) {
