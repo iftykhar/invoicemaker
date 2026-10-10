@@ -8,7 +8,7 @@ export function DroppableZone({ id, children, isActive }: { id: string, children
   return (
     <div 
       ref={setNodeRef} 
-      className={`transition-all flex items-center justify-center ${!children ? 'empty-drop-zone min-w-[10px] min-h-[10px]' : ''} ${isOver ? 'bg-blue-100 outline-dashed outline-2 outline-blue-400 p-2 rounded' : ''} ${isOutlineVisible ? 'outline-dotted outline-2 outline-gray-200 p-2 rounded' : ''}`}
+      className={`transition-all flex items-center justify-center ${!children ? 'empty-drop-zone min-w-[10px] min-h-[10px] print:hidden' : ''} ${isOver ? 'bg-blue-100 outline-dashed outline-2 outline-blue-400 p-2 rounded' : ''} ${isOutlineVisible ? 'outline-dotted outline-2 outline-gray-200 p-2 rounded print:outline-none print:p-0' : ''}`}
     >
       {children}
     </div>

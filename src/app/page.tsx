@@ -296,7 +296,7 @@ export default function InvoiceMakerPage(): JSX.Element {
                   ref={previewRef}
                   id="invoice-preview"
                   style={{ backgroundColor: "#ffffff", color: "#111827" }}
-                  className="p-8 md:p-12 border border-gray-200 shadow-xl font-sans bg-white relative print:shadow-none print:border-none print:w-full print:max-w-[210mm] print:mx-auto"
+                  className="p-8 md:p-12 border border-gray-200 shadow-xl font-sans bg-white relative print:shadow-none print:border-none print:w-full print:max-w-[210mm] print:mx-auto print:p-0"
                 >
                   {activeLayout === 'A' && <LayoutAShell renderBlock={renderBlock} />}
                   {activeLayout === 'B' && <LayoutBShell renderBlock={renderBlock} />}

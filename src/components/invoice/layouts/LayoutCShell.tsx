@@ -125,7 +125,7 @@ export function LayoutCShell({ renderBlock }: { renderBlock: (id: string) => Rea
               </SortableBlockC>
             ))}
           </SortableContext>
-          {layoutC_active.length === 0 && <div className="p-12 text-center border-4 border-dashed border-gray-200 text-gray-400 rounded-lg">Drag blocks here from the Palette</div>}
+          {layoutC_active.length === 0 && <div className="p-12 text-center border-4 border-dashed border-gray-200 text-gray-400 rounded-lg print:hidden">Drag blocks here from the Palette</div>}
         </div>
       </div>
     </DndContext>

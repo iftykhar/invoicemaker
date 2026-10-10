@@ -29,7 +29,7 @@ function GridZone({ id, children, emptyLabel }: { id: string, children: React.Re
   const childCount = React.Children.count(children);
   
   return (
-    <div ref={setNodeRef} className={`min-h-[100px] border-2 border-transparent ${isOver ? 'bg-blue-50 border-dashed border-blue-400' : ''} ${childCount === 0 ? 'border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-sm text-gray-400 print:hidden' : ''} rounded-lg p-2 transition-colors`}>
+    <div ref={setNodeRef} className={`min-h-[100px] border-2 border-transparent ${isOver ? 'bg-blue-50 border-dashed border-blue-400' : ''} ${childCount === 0 ? 'border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-sm text-gray-400 print:border-none print:bg-transparent print:text-transparent' : ''} rounded-lg p-2 transition-colors`}>
       {childCount > 0 ? children : emptyLabel}
     </div>
   );
@@ -79,7 +79,7 @@ export function LayoutBShell({ renderBlock }: { renderBlock: (id: string) => Rea
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-4">
         {/* Top Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4">
           <GridZone id="topLeft" emptyLabel="Top Left">
             {layoutB_zones.topLeft.map(id => <DraggableBlock key={id} id={id}>{renderBlock(id)}</DraggableBlock>)}
           </GridZone>
@@ -94,7 +94,7 @@ export function LayoutBShell({ renderBlock }: { renderBlock: (id: string) => Rea
         </GridZone>
 
         {/* Bottom Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 mt-4">
           <GridZone id="bottomLeft" emptyLabel="Bottom Left">
             {layoutB_zones.bottomLeft.map(id => <DraggableBlock key={id} id={id}>{renderBlock(id)}</DraggableBlock>)}
           </GridZone>
